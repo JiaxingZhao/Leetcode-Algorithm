@@ -166,6 +166,46 @@ class Solution:
 
 ------
 
+### #551  Student Attendance Record I  --  Easy
+
+You are given a string representing an attendance record for a student. The record only contains the following three characters:
+
+1. **'A'** : Absent.
+2. **'L'** : Late.
+3. **'P'** : Present.
+
+A student could be rewarded if his attendance record doesn't contain **more than one 'A' (absent)** or **more than two continuous 'L' (late)**.
+
+You need to return whether the student could be rewarded according to his attendance record.
+
+**Example 1:**
+
+```
+Input: "PPALLP"
+Output: True
+```
+
+**Example 2:**
+
+```
+Input: "PPALLL"
+Output: False
+```
+
+**Solution：**
+
+```python
+class Solution:
+    def checkRecord(self, s):
+        return s.count("A") <= 1 and "LLL" not in s
+    	# 同时满足条件不超过一个A或有连续三个或以上L返回True
+        #Runtime: 52 ms
+```
+
+
+
+------
+
 ### #557  Reverse Words in a String III  --  Easy
 
 Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
