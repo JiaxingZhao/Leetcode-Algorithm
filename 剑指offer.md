@@ -292,3 +292,103 @@ def print_matrix_in_circle(matrix, col, row, start):
 
 
 ```
+
+面试题30： 包含min函数的栈
+```python
+# 使用列表模拟栈操作
+
+data = []
+min = []
+
+
+def stack_with_min_push(value):
+    data.append(value)
+    if len(min) == 0 or value < min[-1:][0]:
+        min.append(value)
+    else:
+        min.append(min[-1:][0])
+
+
+def stack_with_min_pop():
+    if len(data) > 0 and len(min) > 0:
+        data.pop()
+        min.pop()
+
+
+def get_min():
+    if len(data) > 0 and len(min) > 0:
+        return min[-1:][0]
+
+
+```
+
+面试题31： 栈的压入、弹出序列
+```python
+
+
+def is_pop_order(pPush, pPOP):
+    stack = []
+    while pPOP:
+        if pPush and pPush[0] == pPOP[0]:
+            pPush.pop(0)
+            pPOP.pop(0)
+        elif stack and stack[-1] == pPOP[0]:
+            stack.pop()
+            pPOP.pop(0)
+        elif pPush:
+            stack.append(pPush.pop(0))
+        else:
+            return False
+    return True
+
+
+```
+
+面试题32： 从上到下打印二叉树
+```python
+
+
+def print_tree(root):
+    if not root:
+        return
+    stack = []
+    stack.append(root)
+    while stack:
+        root = stack.pop(0)
+        print(root.data)
+        if root.left:
+            stack.append(root.left)
+        if root.right:
+            stack.append(root.right)
+
+
+```
+
+面试题33： 二叉搜索树的后序遍历序列
+```python
+def verify_squence_of_bst(sequence):
+    if len(sequence) == 0:
+        return False
+    root = sequence[-1]
+    i = 0
+    for node in sequence[:-1]:
+        if node > root:
+            break
+        i += 1
+    for node in sequence[i:-1]:
+        if node < root:
+            return False
+    left = True
+    if i > 0:
+        left = verify_squence_of_bst(sequence[:i])
+    right = True
+    if i < len(sequence) - 2:
+        right = verify_squence_of_bst(sequence[i:-1])
+    return left and right
+
+```
+
+面试题34： 二叉树中和为某一值的路径
+```python
+
+```
