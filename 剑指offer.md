@@ -366,6 +366,8 @@ def print_tree(root):
 
 面试题33： 二叉搜索树的后序遍历序列
 ```python
+
+
 def verify_squence_of_bst(sequence):
     if len(sequence) == 0:
         return False
@@ -386,9 +388,184 @@ def verify_squence_of_bst(sequence):
         right = verify_squence_of_bst(sequence[i:-1])
     return left and right
 
+
 ```
 
 面试题34： 二叉树中和为某一值的路径
 ```python
 
+
+def find_path(root, target):
+    if not root:
+        return []
+    all_path = []
+
+    def find_path_main(root, path=[], currentSum=0):
+        currentSum += root.data
+        path.append(root)
+        isLeaf = not root.left and not root.right
+        if currentSum == target and isLeaf:
+            all_path.append([x.data for x in path])
+        if currentSum < target:
+            if root.left:
+                find_path_main(root.left, path, currentSum)
+            if root.right:
+                find_path_main(root.right, path, currentSum)
+        path.pop()
+
+    find_path_main(root)
+    return all_path
+
+
 ```
+
+面试题35： 复杂链表的复制
+```python
+
+
+def clone_nodes(head):
+    while head:
+        cloned = head
+        head, head.next = cloned.next, cloned
+
+
+def clone_siblings(head):
+    while head:
+        cloned = head.next
+        if head.sibling:
+            cloned.sibling = head.sibling.next
+        head = cloned.next
+
+
+def reconnect_nodes(head):
+    cloned_head = cloned = head.next
+    head.next = cloned.next
+    head = head.next
+
+    while head:
+        cloned.next = head.next
+        cloned = cloned.next
+        head.next = cloned.next
+        head = head.next
+
+    return cloned_head
+
+
+def clone(head):
+    if not head:
+        return
+    clone(head)
+    clone_siblings(head)
+    return reconnect_nodes(head)
+
+
+```
+
+面试题36： 二叉搜索树与双向链表
+```python
+
+
+def Convert(pRootOfTree):
+    if pRootOfTree == None:
+        return pRootOfTree
+    if pRootOfTree.left == None and pRootOfTree.right == None:
+        return pRootOfTree
+    left = Convert(pRootOfTree.left)
+    p = left
+    if left:
+        while (p.right):
+            p = p.right
+        p.right = pRootOfTree
+        pRootOfTree.left = p
+    right = Convert(pRootOfTree.right)
+    if right:
+        pRootOfTree.right = right
+        right.left = pRootOfTree
+    return left if left else pRootOfTree
+
+
+```
+
+面试题37： 序列化二叉树
+```python
+# 序列化二叉树
+
+
+def serialize(root):
+    if not root:
+        print('$,', end='')
+        return
+    print(root.data, end=',')
+    serialize(root.left)
+    serialize(root.right)
+
+# 反序列化二叉树
+
+
+def deserialize(serialize):
+    if serialize:
+        serialize = iter(serialize.split(','))
+
+    def create_tree():
+        data = next(serialize)
+        if data == '$':
+            return None
+        node = BSTnode(data=data)
+        node.left = create_tree()
+        node.right = create_tree()
+        return node
+    return create_tree()
+
+
+```
+
+面试题38： 字符串的排列
+```python
+def permutation(string):
+    if not string:
+        return
+    begin = 0
+    end = len(string)
+    def Permutation(string, begin, end):
+        if begin >= end:
+            print(string)
+        else:
+            for char in range(begin, end):
+                string = list(string)
+                string[char], string[begin] = string[begin], string[char]
+                string = ''.join(string)
+                Permutation(string, begin+1, end)
+                string = list(string)
+                string[char], string[begin] = string[begin], string[char]
+                string = ''.join(string)
+    Permutation(string, begin, end)
+
+
+# 八皇后问题
+def conflict(state,nextx):
+    nexty = len(state)
+    for i in range(nexty):
+        if abs(state[i]-nextx) in (0,nexty-i):
+            return True
+    return False
+
+def queens(num=8,state=()):
+    for pos in range(num):
+        if not conflict(state,pos):
+            if len(state) == num - 1:
+                yield (pos,)
+            else:
+                for result in queens(num,state + (pos,)):
+                    yield (pos,) + result
+
+def prettyp(solution):
+    def line(pos,length = len(solution)):
+        return 'O'*(pos)+'X'+'O'*(length-pos-1)
+    for pos in solution:
+        print(line(pos))
+        
+import random
+prettyp(random.choice(list(queens(8))))
+
+```
+
