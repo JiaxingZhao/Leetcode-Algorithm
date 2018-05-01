@@ -521,11 +521,14 @@ def deserialize(serialize):
 
 面试题38： 字符串的排列
 ```python
+
+
 def permutation(string):
     if not string:
         return
     begin = 0
     end = len(string)
+
     def Permutation(string, begin, end):
         if begin >= end:
             print(string)
@@ -534,7 +537,7 @@ def permutation(string):
                 string = list(string)
                 string[char], string[begin] = string[begin], string[char]
                 string = ''.join(string)
-                Permutation(string, begin+1, end)
+                Permutation(string, begin + 1, end)
                 string = list(string)
                 string[char], string[begin] = string[begin], string[char]
                 string = ''.join(string)
@@ -542,30 +545,215 @@ def permutation(string):
 
 
 # 八皇后问题
-def conflict(state,nextx):
+def conflict(state, nextx):
     nexty = len(state)
     for i in range(nexty):
-        if abs(state[i]-nextx) in (0,nexty-i):
+        if abs(state[i] - nextx) in (0, nexty - i):
             return True
     return False
 
-def queens(num=8,state=()):
+
+def queens(num=8, state=()):
     for pos in range(num):
-        if not conflict(state,pos):
+        if not conflict(state, pos):
             if len(state) == num - 1:
                 yield (pos,)
             else:
-                for result in queens(num,state + (pos,)):
+                for result in queens(num, state + (pos,)):
                     yield (pos,) + result
 
+
 def prettyp(solution):
-    def line(pos,length = len(solution)):
-        return 'O'*(pos)+'X'+'O'*(length-pos-1)
+    def line(pos, length=len(solution)):
+        return 'O' * (pos) + 'X' + 'O' * (length - pos - 1)
     for pos in solution:
         print(line(pos))
-        
+
+
 import random
 prettyp(random.choice(list(queens(8))))
 
 ```
 
+面试题39： 数组中出现次数超过一半的数字
+```python
+
+
+def more_than_half_num(nums):
+    if not nums:
+        return []
+    result, times = nums[0], 1
+    for i in range(1, len(nums)):
+        if times == 0:
+            result = nums[i]
+            times = 1
+        else:
+            times += 1 if nums[i] == result else -1
+    return result
+
+
+```
+
+面试题40： 最小的K个数
+```python
+# 使用堆
+import heapq
+
+
+def get_least_numbers(nums, k):
+    heaps = []
+    ret = []
+    for num in nums:
+        heapq.heappush(heaps, num)
+    if k > len(heaps):
+        return []
+    for i in range(k):
+        ret.append(heapq.heappop(heaps))
+    return ret
+
+
+```
+
+面试题41： 数据流中的中位数
+```python
+import heapq
+small = []
+large = []
+
+
+def insert_num(num):
+    if not num:
+        return
+    heapq.heappush(large, num)
+    if len(large) - len(small) > 1:
+        heapq.heappush(small, heapq.heappop(large))
+
+
+def get_median():
+    if len(large) > len(small):
+        median = float(large[0])
+    else:
+        median = (large[0] + small[-1]) / 2
+    return median
+
+
+```
+
+面试题42： 连续子数组的最大和
+```python
+
+
+def find_greatest_sum_of_subarray(array):
+    if not array:
+        return
+    if len(array) == 1:
+        return array[0]
+    current = sum_num = array[0]
+    for i in range(1, len(array)):
+        sum_num = max(sum_num + array[i], array[i])
+        current = max(current, sum_num)
+    return current
+
+
+```
+
+面试题43： 1 - n整数中1出现的次数
+```python
+暂时无解
+
+```
+
+面试题44： 数字序列中某一位的数字
+```python
+def digitAtIndex(index, digits):
+    number = (0 if digits == 1 else 10**(digits-1)) + (index / digits)
+    indexFromRight = digits - index % digits
+    for i in range(1, indexFromRight):
+        number /= 10
+    return int(number % 10)
+
+
+def digit_at_index(index):
+    if index < 0:
+        return -1
+    digits = 1
+    while True:
+        numbers = 10 if digits == 1 else 9 * 10**(digits - 1)
+        if index < numbers * digits:
+            return digitAtIndex(index, digits)
+        index -= digits * numbers
+        digits += 1
+    return -1
+
+
+```
+
+面试题45： 把数组排成最小的数
+```python
+def print_min_number(numbers):
+    if not numbers:
+        return
+    from functools import cmp_to_key
+    key = cmp_to_key(lambda x,y: int(x+y)-int(y+x))
+    res = ''.join(sorted(map(str,numbers), key=key)).lstrip('0')
+    return res or '0'   
+
+```
+
+面试题46： 把数字翻译成字符串
+```python
+def get_translation_count(numbers):
+    if not numbers:
+        return 0
+    numbers = str(numbers)
+    length = len(numbers)
+    counts = [0 for x in range(length)]
+    for i in reversed(range(0, length)):
+        count = counts[i + 1] if i < length - 1 else 1
+        if i < length - 1:
+            converted = int(numbers[i]) * 10 + int(numbers[i + 1])
+            if 10 <= int(converted) <= 25:
+                count += counts[i+2] if i < length - 2 else 1
+        counts[i] = count
+    return counts[0]
+
+```
+
+面试题47： 礼物的最大价值
+```python
+# [1,10,3,8,12,2,9,6,5,7,4,11,3,7,16,5],4,4
+
+def get_max_value(values, rows, cols):
+    if not values or rows <= 0 or cols <= 0:
+        return 0
+    temp = [0] * cols
+    for i in range(rows):
+        for j in range(cols):
+            up = 0
+            left = 0
+            if i > 0:
+                up = temp[j]
+            if j > 0:
+                left = temp[j - 1]
+            temp[j] = max(up, left) + values[i * rows + j]
+    return temp[-1]
+
+```
+
+面试题48： 最长不含重复字符的子字符串
+```python
+def length_of_longest_substring(s):
+    res = 0
+    if s is None or len(s) == 0:
+        return res
+    d = {}
+    start = 0
+    for i in range(len(s)):
+        if s[i] in d and d[s[i]] >= start:
+            start = d[s[i]] + 1
+        tmp = i - start + 1
+        d[s[i]] = i
+        res = max(res, tmp)
+    return res
+
+```
