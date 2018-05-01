@@ -757,3 +757,179 @@ def length_of_longest_substring(s):
     return res
 
 ```
+
+面试题49： 丑数
+```python
+def get_ugly_number(index):
+    if not index:
+        return 0
+    ugly_number = [1] * index
+    next_index = 1
+    m2 = m3 = m5 = 1
+    while next_index < index:
+        ugly_number[next_index] = min(m2 * 2, m3 * 3, m5 * 5)
+        while m2 * 2 <= ugly_number[next_index]:
+            m2 += 1
+        while m3 * 3 <= ugly_number[next_index]:
+            m3 += 1
+        while m5 * 5 <= ugly_number[next_index]:
+            m5 += 1
+        next_index += 1
+    return ugly_number[next_index - 1]
+    
+```
+
+面试题50： 第一个只出现一次的字符
+```python
+def first_not_repeating_char(string):
+    if not string:
+        return
+    temp = dict([(x,0) for x in range(26)])
+    for s in string:
+        # ord('a') == 97
+        temp[ord(s) - 97] += 1
+    for s in string:
+        if temp[ord(s)-97] == 1:
+            res = s
+            break
+    return res
+
+```
+
+面试题51： 数组中的逆序对
+```python
+class Solution:
+    def InversePairs(self, data):
+        self.count = 0
+        def MergeSort(lists):
+            if len(lists) <= 1:
+                return lists
+            num = len(lists) >> 1
+            left = MergeSort(lists[:num])
+            right = MergeSort(lists[num:])
+            R = L = 0
+            LL, LR = len(left), len(right)
+            result = []
+            while L < LL and R < LR:
+                if left[L] < right[R]:
+                    result.append(left[L])
+                    L += 1
+                else:
+                    result.append(right[R])
+                    R += 1
+                    self.count += LL - L
+            result += right[R:]
+            result += left[L:]
+            return result
+        MergeSort(data)
+        return self.count % 1000000007
+
+```
+
+面试题52： 两个链表中的第一个公共节点
+```python
+def find_first_common_node(pHead1, pHead2):
+    if not pHead1 or not pHead2:
+        return None
+    pa = pHead1
+    pb = pHead2
+    while(pa!=pb):
+        pa = pHead2 if pa is None else pa.next
+        pb = pHead1 if pb is None else pb.next
+    return pa
+
+```
+
+面试题53： 在排序数组中查找数字
+```python
+def get_k(data, k, start, end, first):
+    if start > end:
+        return -1
+    mid = (end + start) >> 1
+    mid_data = data[mid]
+    if mid_data == k:
+        if first:
+            if mid > 0 and data[mid - 1] != k or mid == 0:
+                return mid
+            else:
+                end = mid - 1
+        else:
+            if mid < len(data) - 1 and data[mid + 1] != k or mid == len(data) - 1:
+                return mid
+            else:
+                start = mid + 1
+    elif mid_data > k:
+        end = mid - 1
+    else:
+        start = mid + 1
+    return get_k(data, k, start, end, first)
+
+def get_number_of_k(data, k):
+    if not data or not k:
+        return
+    number = 0
+    length = len(data)
+    if data and length > 0:
+        first = get_k(data, k, 0, length - 1, first=True)
+        last = get_k(data, k, 0, length - 1, first=False)
+        if first > -1 and last > -1:
+            number = last - first + 1
+    return number 
+    
+```
+
+面试题54： 二叉搜索树的第K个节点
+```python
+def k_node(root, k):
+    if not root or not k:
+        return
+    res = []
+    def dfs(node):
+        if len(res) >= k or not node:
+            return
+        dfs(node.left)
+        res.append(node)
+        dfs(node.right)
+    dfs(root)
+    if len(res) < k:
+        return
+    return res[k-1]
+    
+```
+
+面试题55： 二叉树的深度
+```python
+# 二叉树深度
+def tree_depth(root):
+    if not root:
+        return 0
+    left = tree_depth(root.left)
+    right = tree_depth(root.right)
+    return max(left,right) + 1
+
+
+# 平衡二叉树
+def banlanced(root, depth):
+    if not root:
+        depth = 0
+        return True
+    left = right = 0
+    if banlanced(root.left, left) and banlanced(root.right, right):
+        diff = left - right
+        if -1 <= diff <= 1:
+            depth = left + 1 if left > right else right + 1
+            return True
+    return False
+
+def is_banlanced(root):
+    if not root:
+        return
+    depth = 0
+    return banlanced(root, depth)
+
+```
+
+面试题56： 数组中数字出现的次数
+```python
+
+```
