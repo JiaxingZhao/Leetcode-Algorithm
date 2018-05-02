@@ -1,3 +1,10 @@
+面试题1 - - 面试题20：
+```python
+等待补充
+
+```
+
+
 面试题21： 调整数组顺序使奇数位于偶数前面
 ```python
 
@@ -844,7 +851,7 @@ class Solution:
             result += left[L:]
             return result
         MergeSort(data)
-        return self.count % 1000000007
+        return self.count
 
 
 ```
