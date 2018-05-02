@@ -665,8 +665,10 @@ def find_greatest_sum_of_subarray(array):
 
 面试题44： 数字序列中某一位的数字
 ```python
+
+
 def digitAtIndex(index, digits):
-    number = (0 if digits == 1 else 10**(digits-1)) + (index / digits)
+    number = (0 if digits == 1 else 10**(digits - 1)) + (index / digits)
     indexFromRight = digits - index % digits
     for i in range(1, indexFromRight):
         number /= 10
@@ -690,18 +692,23 @@ def digit_at_index(index):
 
 面试题45： 把数组排成最小的数
 ```python
+
+
 def print_min_number(numbers):
     if not numbers:
         return
     from functools import cmp_to_key
-    key = cmp_to_key(lambda x,y: int(x+y)-int(y+x))
-    res = ''.join(sorted(map(str,numbers), key=key)).lstrip('0')
-    return res or '0'   
+    key = cmp_to_key(lambda x, y: int(x + y) - int(y + x))
+    res = ''.join(sorted(map(str, numbers), key=key)).lstrip('0')
+    return res or '0'
+
 
 ```
 
 面试题46： 把数字翻译成字符串
 ```python
+
+
 def get_translation_count(numbers):
     if not numbers:
         return 0
@@ -713,15 +720,17 @@ def get_translation_count(numbers):
         if i < length - 1:
             converted = int(numbers[i]) * 10 + int(numbers[i + 1])
             if 10 <= int(converted) <= 25:
-                count += counts[i+2] if i < length - 2 else 1
+                count += counts[i + 2] if i < length - 2 else 1
         counts[i] = count
     return counts[0]
+
 
 ```
 
 面试题47： 礼物的最大价值
 ```python
 # [1,10,3,8,12,2,9,6,5,7,4,11,3,7,16,5],4,4
+
 
 def get_max_value(values, rows, cols):
     if not values or rows <= 0 or cols <= 0:
@@ -738,10 +747,13 @@ def get_max_value(values, rows, cols):
             temp[j] = max(up, left) + values[i * rows + j]
     return temp[-1]
 
+
 ```
 
 面试题48： 最长不含重复字符的子字符串
 ```python
+
+
 def length_of_longest_substring(s):
     res = 0
     if s is None or len(s) == 0:
@@ -756,10 +768,13 @@ def length_of_longest_substring(s):
         res = max(res, tmp)
     return res
 
+
 ```
 
 面试题49： 丑数
 ```python
+
+
 def get_ugly_number(index):
     if not index:
         return 0
@@ -776,31 +791,38 @@ def get_ugly_number(index):
             m5 += 1
         next_index += 1
     return ugly_number[next_index - 1]
-    
+
+
 ```
 
 面试题50： 第一个只出现一次的字符
 ```python
+
+
 def first_not_repeating_char(string):
     if not string:
         return
-    temp = dict([(x,0) for x in range(26)])
+    temp = dict([(x, 0) for x in range(26)])
     for s in string:
         # ord('a') == 97
         temp[ord(s) - 97] += 1
     for s in string:
-        if temp[ord(s)-97] == 1:
+        if temp[ord(s) - 97] == 1:
             res = s
             break
     return res
+
 
 ```
 
 面试题51： 数组中的逆序对
 ```python
+
+
 class Solution:
     def InversePairs(self, data):
         self.count = 0
+
         def MergeSort(lists):
             if len(lists) <= 1:
                 return lists
@@ -824,24 +846,30 @@ class Solution:
         MergeSort(data)
         return self.count % 1000000007
 
+
 ```
 
 面试题52： 两个链表中的第一个公共节点
 ```python
+
+
 def find_first_common_node(pHead1, pHead2):
     if not pHead1 or not pHead2:
         return None
     pa = pHead1
     pb = pHead2
-    while(pa!=pb):
+    while(pa != pb):
         pa = pHead2 if pa is None else pa.next
         pb = pHead1 if pb is None else pb.next
     return pa
+
 
 ```
 
 面试题53： 在排序数组中查找数字
 ```python
+
+
 def get_k(data, k, start, end, first):
     if start > end:
         return -1
@@ -864,6 +892,7 @@ def get_k(data, k, start, end, first):
         start = mid + 1
     return get_k(data, k, start, end, first)
 
+
 def get_number_of_k(data, k):
     if not data or not k:
         return
@@ -874,16 +903,20 @@ def get_number_of_k(data, k):
         last = get_k(data, k, 0, length - 1, first=False)
         if first > -1 and last > -1:
             number = last - first + 1
-    return number 
-    
+    return number
+
+
 ```
 
 面试题54： 二叉搜索树的第K个节点
 ```python
+
+
 def k_node(root, k):
     if not root or not k:
         return
     res = []
+
     def dfs(node):
         if len(res) >= k or not node:
             return
@@ -893,19 +926,22 @@ def k_node(root, k):
     dfs(root)
     if len(res) < k:
         return
-    return res[k-1]
-    
+    return res[k - 1]
+
+
 ```
 
 面试题55： 二叉树的深度
 ```python
 # 二叉树深度
+
+
 def tree_depth(root):
     if not root:
         return 0
     left = tree_depth(root.left)
     right = tree_depth(root.right)
-    return max(left,right) + 1
+    return max(left, right) + 1
 
 
 # 平衡二叉树
@@ -921,16 +957,20 @@ def banlanced(root, depth):
             return True
     return False
 
+
 def is_banlanced(root):
     if not root:
         return
     depth = 0
     return banlanced(root, depth)
 
+
 ```
 
 面试题56： 数组中数字出现的次数
 ```python
+
+
 def find_nums_appear_once(data):
     if not data or len(data) < 2:
         return
@@ -968,17 +1008,20 @@ def find_number_appearing_once(data):
         result += bitSum[i] % 3
     return result
 
+
 ```
 
 面试题57： 和为s的数字
 ```python
+
+
 def find_numbers_with_sum(data, num):
     if not data or not num:
         return False
     left = 0
     right = len(data) - 1
     while left < right:
-        curSum = data[left] + data[right] 
+        curSum = data[left] + data[right]
         if curSum == num:
             return data[left], data[right]
         elif curSum > num:
@@ -994,7 +1037,7 @@ def find_continuous_sequence(sum):
         return
     small = 1
     big = 2
-    middle = (1+sum) >> 1
+    middle = (1 + sum) >> 1
     curSum = small + big
     while small < middle:
         if curSum == sum:
@@ -1006,16 +1049,20 @@ def find_continuous_sequence(sum):
                 print_continuous_sequence(small, big)
         big += 1
         curSum += big
-    
+
+
 ```
 
 面试题58： 翻转字符串
 ```python
+
+
 def reverse_string(data, start, end):
     while start < end:
         data[start], data[end] = data[end], data[start]
         start += 1
         end -= 1
+
 
 def reverse_sentence(data):
     if not data:
@@ -1026,15 +1073,15 @@ def reverse_sentence(data):
 
     start = end = 0
     while end < len(data):
-        if data[end] == ' ' or end == len(data)-1:
-            ends = end if end == len(data)-1 else end - 1
+        if data[end] == ' ' or end == len(data) - 1:
+            ends = end if end == len(data) - 1 else end - 1
             reverse_string(data, start, ends)
             start = end = end + 1
         else:
             end += 1
     return ''.join(data)
-    
-    
+
+
 # 左旋转字符串
 def left_rotate_string(data, n):
     if not data:
@@ -1044,21 +1091,25 @@ def left_rotate_string(data, n):
         firstEnd = n - 1
         secondStart = n
         secondEnd = len(data) - 1
-        
+
         data = list(data)
         reverse_string(data, firstStart, firstEnd)
         reverse_string(data, secondStart, secondEnd)
         reverse_string(data, firstStart, secondEnd)
-        return ''.join(data)        
+        return ''.join(data)
+
 
 ```
 
 面试题59： 队列的最大值
 ```python
+
+
 def max_in_windows(nums, size):
     if not size or size > len(nums):
         return []
-    return [max(nums[i:i+size]) for i in range(len(nums)-size+1)]
+    return [max(nums[i:i + size]) for i in range(len(nums) - size + 1)]
+
 
 ```
 
@@ -1070,6 +1121,8 @@ def max_in_windows(nums, size):
 
 面试题61： 扑克牌中的顺子
 ```python
+
+
 def is_continuous(numbers):
     if not numbers:
         return False
@@ -1089,28 +1142,34 @@ def is_continuous(numbers):
         big += 1
     return False if number_of_gap > number_of_zero else True
 
+
 ```
 
 面试题62： 圆圈中最后剩下的数字
 ```python
+
+
 def last_remaining(n, m):
     if not n or not m:
         return -1
     last = 0
-    for i in range(2, n+1):
+    for i in range(2, n + 1):
         last = (last + m) % i
     return last
+
 
 ```
 
 面试题63： 股票的最大利润
 ```python
+
+
 def max_diff(numbers):
     if not numbers or len(numbers) < 2:
         return 0
     min = numbers[0]
     maxDiff = numbers[1] - min
-    for i in range(2, len(numbers)- 1):
+    for i in range(2, len(numbers) - 1):
         if numbers[i] < min:
             min = numbers[i]
         curDiff = numbers[i] - min
@@ -1118,9 +1177,42 @@ def max_diff(numbers):
             maxDiff = curDiff
     return maxDiff
 
+
 ```
 
-面试题64： 求1+2+···+n
+面试题64： 求1 + 2 +···+n
 ```python
+
+
+def sum_solution(n):
+    return sum(range(n + 1))
+
+
+```
+
+面试题65： 不用加减乘除做加法
+```python
+
+
+def add_num(num1, num2):
+    if not num1 or not num2:
+        return
+    return sum([num1, num2])
+
+
+```
+
+面试题66： 构建乘积数组
+```python
+
+
+def multiply(arrayA):
+    head = [1]
+    tail = [1]
+    for i in range(len(arrayA) - 1):
+        head.append(arrayA[i] * head[i])
+        tail.append(arrayA[-i - 1] * tail[i])
+    return [head[j] * tail[-j - 1] for j in range(len(head))]
+
 
 ```
