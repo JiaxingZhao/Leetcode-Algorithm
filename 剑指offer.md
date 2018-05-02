@@ -931,5 +931,196 @@ def is_banlanced(root):
 
 面试题56： 数组中数字出现的次数
 ```python
+def find_nums_appear_once(data):
+    if not data or len(data) < 2:
+        return
+    res = 0
+    for num in data:
+        res ^= num
+    index = first = second = 0
+    while res & 1 == 0:
+        res = res >> 1
+        index += 1
+    for num in data:
+        if (num >> index) & 1:
+            first ^= num
+        else:
+            second ^= num
+    return (first, second)
+
+
+# 数组中唯一只出现一次的数字
+
+def find_number_appearing_once(data):
+    if not data:
+        return
+    bitSum = [0] * 32
+    for i in range(len(data)):
+        bitMask = 1
+        for j in reversed(range(32)):
+            bit = data[i] & bitMask
+            if bit:
+                bitSum[j] += 1
+            bitMask = bitMask << 1
+    result = 0
+    for i in range(32):
+        result = result << 1
+        result += bitSum[i] % 3
+    return result
+
+```
+
+面试题57： 和为s的数字
+```python
+def find_numbers_with_sum(data, num):
+    if not data or not num:
+        return False
+    left = 0
+    right = len(data) - 1
+    while left < right:
+        curSum = data[left] + data[right] 
+        if curSum == num:
+            return data[left], data[right]
+        elif curSum > num:
+            right -= 1
+        else:
+            left -= 1
+    return False
+
+
+# 和为s的连续正数序列
+def find_continuous_sequence(sum):
+    if not sum or sum < 3:
+        return
+    small = 1
+    big = 2
+    middle = (1+sum) >> 1
+    curSum = small + big
+    while small < middle:
+        if curSum == sum:
+            print_continuous_sequence(small, big)
+        while curSum > sum and small < middle:
+            curSum -= small
+            small += 1
+            if curSum == sum:
+                print_continuous_sequence(small, big)
+        big += 1
+        curSum += big
+    
+```
+
+面试题58： 翻转字符串
+```python
+def reverse_string(data, start, end):
+    while start < end:
+        data[start], data[end] = data[end], data[start]
+        start += 1
+        end -= 1
+
+def reverse_sentence(data):
+    if not data:
+        return
+    start, end = 0, len(data) - 1
+    data = list(data)
+    reverse_string(data, start, end)
+
+    start = end = 0
+    while end < len(data):
+        if data[end] == ' ' or end == len(data)-1:
+            ends = end if end == len(data)-1 else end - 1
+            reverse_string(data, start, ends)
+            start = end = end + 1
+        else:
+            end += 1
+    return ''.join(data)
+    
+    
+# 左旋转字符串
+def left_rotate_string(data, n):
+    if not data:
+        return
+    if len(data) > 0 and n < len(data) and n > 0:
+        firstStart = 0
+        firstEnd = n - 1
+        secondStart = n
+        secondEnd = len(data) - 1
+        
+        data = list(data)
+        reverse_string(data, firstStart, firstEnd)
+        reverse_string(data, secondStart, secondEnd)
+        reverse_string(data, firstStart, secondEnd)
+        return ''.join(data)        
+
+```
+
+面试题59： 队列的最大值
+```python
+def max_in_windows(nums, size):
+    if not size or size > len(nums):
+        return []
+    return [max(nums[i:i+size]) for i in range(len(nums)-size+1)]
+
+```
+
+面试题60： n个骰子的点数
+```python
+暂时无解
+
+```
+
+面试题61： 扑克牌中的顺子
+```python
+def is_continuous(numbers):
+    if not numbers:
+        return False
+    length = len(numbers)
+    if length < 1:
+        return False
+    numbers = sorted(numbers)
+    number_of_zero = len([x for x in numbers if x == 0])
+    number_of_gap = 0
+    small = number_of_zero
+    big = small + 1
+    while big < length:
+        if numbers[small] == numbers[big]:
+            return False
+        number_of_gap += numbers[big] - numbers[small] - 1
+        small = big
+        big += 1
+    return False if number_of_gap > number_of_zero else True
+
+```
+
+面试题62： 圆圈中最后剩下的数字
+```python
+def last_remaining(n, m):
+    if not n or not m:
+        return -1
+    last = 0
+    for i in range(2, n+1):
+        last = (last + m) % i
+    return last
+
+```
+
+面试题63： 股票的最大利润
+```python
+def max_diff(numbers):
+    if not numbers or len(numbers) < 2:
+        return 0
+    min = numbers[0]
+    maxDiff = numbers[1] - min
+    for i in range(2, len(numbers)- 1):
+        if numbers[i] < min:
+            min = numbers[i]
+        curDiff = numbers[i] - min
+        if curDiff > maxDiff:
+            maxDiff = curDiff
+    return maxDiff
+
+```
+
+面试题64： 求1+2+···+n
+```python
 
 ```
