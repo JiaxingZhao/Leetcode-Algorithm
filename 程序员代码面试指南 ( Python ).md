@@ -294,6 +294,8 @@ class Solution:
 
 构造数组的MaxTree
 ```python
+
+
 class Node:
     def __init__(self, val, left=None, right=None):
         self.val = val
@@ -351,6 +353,223 @@ class Solution:
     def popStackSetMap(self, stack, map):
         popNode = stack.pop()
         map[popNode] = None if not stack else stack[-1]
+
+
+```
+
+*****
+
+求最大子矩阵的大小
+```python
+
+
+class Solution:
+    def maxRecSize(self, map):
+        if not map or len(map[0]) == 0:
+            return 0
+        maxArea = 0
+        height = [0] * len(map[0])
+        for i in range(len(map)):
+            for j in range(len(map[0])):
+                height[j] = 0 if map[i][j] == 0 else height[j] + 1
+            maxArea = max(self.maxRecFromBottom(height), maxArea)
+        return maxArea
+
+    def maxRecFromBottom(self, height):
+        if not height:
+            return 0
+        maxArea = 0
+        stack = []
+        for i in range(len(height)):
+            while stack and height[i] <= height[stack - 1]:
+                j = stack.pop()
+                k = -1 if not stack else stack[-1]
+                curArea = (i - k - 1) * height[j]
+                maxArea = max(maxArea, curArea)
+                stack.append(i)
+            while stack:
+                j = stack.pop()
+                k = -1 if not stack else stack[-1]
+                curArea = (len(height) - k - 1) * height[j]
+                maxArea = max(maxArea, curArea)
+            return maxArea
+
+
+```
+
+*****
+
+最大值减去最小值小于或等于num的子数组数量
+```python
+# 设置两个辅助栈，分别保存当前找到的最大值和最小值，找到后即对比是否满足num要求
+# 如果不满足则跳过当前循环，继续判断当前指针是否大于栈最后一个值，满足则弹出最后一个值
+# 当前i指针组成的所有子数组满足条件数量的数量为j，以arr[i+1]作为第一个元素子数组，结果res+=j-i
+
+
+class Solution:
+    def getNum(self, arr, num):
+        if not arr:
+            return 0
+        qmin = []
+        qmax = []
+        i = 0
+        j = 0
+        res = 0
+        while i < len(arr):
+            while j < len(arr):
+                while qmin and arr[qmin[-1]] >= arr[j]:
+                    qmin.pop()
+                qmin.append(j)
+                while qmax and arr[qmax[-1]] <= arr[j]:
+                    qmax.pop()
+                qmax.append(j)
+                if (arr[qmax[0]] - arr[qmin[0]]) > num:
+                    break
+                j += 1
+            if qmin[0] == i:
+                qmin.pop(0)
+            if qmax[0] == i:
+                qmax.pop(0)
+            res += j - i
+            i += 1
+        return res
+
+
+```
+
+
+# 第2章 链表问题
+
+打印两个有序链表的公共部分
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class Solution:
+    def printCommonPart(self, head1, head2):
+        if not head1 or not head2:
+            return
+        while head1 and head2:
+            if head1.val < head2.val:
+                head1 = head1.next
+            elif head2.val < head1.val:
+                head2 = head2.next
+            else:
+                print(head1.val, end=' ')
+                head1 = head1.next
+                head2 = head2.next
+
+
+```
+
+*****
+
+在单链表和双链表中删除倒数第K个节点
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class DoubleNode:
+    def __init__(self, val, last=None, next=None):
+        self.val = val
+        self.last = last
+        self.next = next
+
+
+class Solution:
+    def removeLastKthNodeInSingleLink(self, head, lastKth):
+        if not head or lastKth < 1:
+            return head
+        cur = head
+        while cur:
+            lastKth -= 1
+            cur = cur.next
+        if lastKth == 0:
+            head = head.next
+        if lastKth < 0:
+            cur = head
+            while lastKth != 0:
+                cur = cur.next
+                lastKth += 1
+            cur.next = cur.next.next
+        return head
+
+    def removeLastKthNodeInDoubleLink(self, head, lastKth):
+        if not head or lastKth < 1:
+            return
+        cur = head
+        while cur:
+            lastKth -= 1
+            cur = cur.next
+        if lastKth == 0:
+            head = head.next
+            head.last = None
+        if lastKth < 0:
+            cur = head
+            while lastKth != 0:
+                cur = cur.next
+                lastKth += 1
+            newNext = cur.next.next
+            cur.next = newNext
+            if newNext:
+                newNext.last = cur
+        return head
+
+
+```
+
+*****
+
+删除链表的中间节点和a / b处的节点
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class Solution:
+    def removeMidNode(self, head):
+        if not head or not head.next:
+            return head
+        pre = head
+        cur = head.next.next
+        while cur.next and cur.next.next:
+            pre = pre.next
+            cur = cur.next.next
+        pre.next = pre.next.next
+        return head
+
+    def removeByRatio(self, head, a, b):
+        if a < 1 or a > b:
+            return head
+        n = 0
+        cur = head
+        while cur:
+            n += 1
+            cur = cur.next
+        import math
+        n = math.ceil((a * n) / b)
+        if n == 1:
+            head = head.next
+        if n > 1:
+            cur = head
+            while n - 1 != 1:
+                cur = cur.next
+            cur.next = cur.next.next
+        return head
 
 
 ```
