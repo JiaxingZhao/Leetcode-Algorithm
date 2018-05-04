@@ -573,3 +573,116 @@ class Solution:
 
 
 ```
+
+*****
+
+反转单向和双向链表
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class DoubleLinkNode:
+    def __init__(self, val, last=None, next=None):
+        self.val = val
+        self.last = last
+        self.next = next
+
+
+class Solution:
+    def reverseSingleLink(self, head):
+        pre = None
+        next = None
+        while head:
+            next = head.next
+            head.next = pre
+            pre = head
+            head = next
+        return pre
+
+    def reverseDoubleLink(self, head):
+        pre = None
+        next = None
+        while head:
+            next = head.next
+            head.next = pre
+            head.last = next
+            pre = head
+            head = next
+        return pre
+
+
+```
+
+*****
+
+反转部分单向链表
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class Solution:
+    def reversePart(self, head, fromN, toN):
+        node1 = head
+        fPre = None
+        tPos = None
+        length = 0
+        while node1:
+            length += 1
+            fPre = node1 if length == fromN - 1 else fPre
+            tPos = node1 if length == toN + 1 else tPos
+            node1 = node1.next
+        if fromN > toN or fromN < 1 or toN > length:
+            return head
+        node1 = head if not fPre else fPre.next
+        node2 = node1.next
+        node1.next = tPos
+        next = None
+        while node2 != tPos:
+            next = node2.next
+            node2.next = node1
+            node1 = node2
+            node2 = next
+        if fPre:
+            fPre.next = node1
+            return head
+        return node1
+
+
+```
+
+*****
+
+形成单链表的约瑟夫问题
+```python
+
+
+class Solution:
+    def josephusKill1(self, head, m):
+        if not head or head == head.next or m < 1:
+            return head
+        last = head
+        while last.next != head:
+            last = last.next
+        count = 0
+        while head != last:
+            if count + 1 == m:
+                last.next = head.next
+                count = 0
+            else:
+                last = last.next
+            head = last.next
+            count += 1
+        return head
+
+
+```

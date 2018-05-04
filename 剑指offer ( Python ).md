@@ -175,17 +175,19 @@ def has_subtree(root1, root2):
 # 递归方法
 
 
-def mirror_recursively(root):
-    if not root:
-        return
-    if not root.left and not root.right:
-        return
+class Solution:
+    # 返回镜像树的根节点
+    def Mirror(self, root):
+        if not root:
+            return
+        if not root.left and not root.right:
+            return
 
-    root.left, root.right = root.right, root.left
-    if root.left:
-        mirror_recursively(root.left)
-    if root.right:
-        mirror_recursively(root.right)
+        root.left, root.right = root.right, root.left
+        if root.left:
+            self.Mirror(root.left)
+        if root.right:
+            self.Mirror(root.right)
 
 
 # 循环方法, 使用数组模拟栈操作
