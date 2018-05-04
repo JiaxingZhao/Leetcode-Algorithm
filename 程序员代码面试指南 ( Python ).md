@@ -684,5 +684,180 @@ class Solution:
             count += 1
         return head
 
+    def josephusKill2(self, head, m):
+        if not head or head.next == head or m < 1:
+            return head
+        cur = head.next
+        tmp = 1
+        while cur != head:
+            tmp += 1
+            cur = cur.next
+        tmp = self.getLive(tmp, m)
+        while tmp - 1 != 0:
+            head = head.next
+            tmp -= 1
+        head.next = head
+        return head
+
+    def getLive(self, i, m):
+        if i == 1:
+            return 1
+        return (self.getLive(i - 1, m) + m - 1) % i + 1
+
+
+```
+
+*****
+
+判断一个链表是否为回文结构
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class Solution:
+    def isPalindrome1(self, head):
+        if not head:
+            return
+        stack = []
+        cur = head
+        while cur:
+            stack.append(cur)
+            cur = cur.next
+        while head:
+            if head.val != stack.pop().val:
+                return False
+            head = head.next
+        return True
+
+    def isPalindrome2(self, head):
+        if not head or not head.next:
+            return
+        stack = []
+        cur = head
+        right = head.next
+        while cur.next and cur.next.next:
+            cur = cur.next.next
+            right = right.next
+        while right:
+            stack.append(right)
+            right = right.next
+        while stack:
+            if head.val != stack.pop().val:
+                return False
+            head = head.next
+        return True
+
+    def isPalindrome3(self, head):
+        if not head or not head.next:
+            return
+        n1 = n2 = head
+        while n2.next and n2.next.next:
+            n1, n2 = n1.next, n2.next.next
+        n2 = n1.next
+        n1.next = n3 = None
+        while n2:
+            n3 = n2.next
+            n2.next = n1
+            n1 = n2
+            n2 = n3
+        n2, n3 = head, n1
+        res = True
+        while n1 and n2:
+            if n1.val != n2.val:
+                return False
+            n1, n2 = n1.next, n2.next
+        n1 = n3.next
+        n3.next = None
+        while n1:
+            n2 = n1.next
+            n1.next = n3
+            n3 = n1
+            n1 = n2
+        return res
+
+
+```
+
+*****
+
+将单向链表按某值划分成左边小，中间相等，右边大的形式
+```python
+
+
+class LinkNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+class Solution:
+    def listPartition1(self, head, pivot):
+        if not head or not pivot:
+            return head
+        nodeArr = []
+        cur = head
+        while cur:
+            nodeArr.append(cur)
+            cur = cur.next
+        self.arrPartition(nodeArr, pivot)
+        for i in range(len(nodeArr) - 1):
+            nodeArr[i].next = nodeArr[i + 1]
+        nodeArr[-1].next = None
+        return nodeArr[0]
+
+    def arrPartition(self, nodeArr, pivot):
+        small = 0
+        big = len(nodeArr) - 1
+        index = 0
+        while index != big:
+            if nodeArr[index].val < pivot:
+                nodeArr[small], nodeArr[index] = nodeArr[index], nodeArr[small]
+                small += 1
+                index += 1
+            elif nodeArr[index].val == pivot:
+                index += 1
+            else:
+                nodeArr[big], nodeArr[index] = nodeArr[index], nodeArr[big]
+                big -= 1
+
+    def listPartition2(self, head, pivot):
+        sH = sT = eH = eT = bH = bT = None
+        while head:
+            next = head.next
+            head.next = None
+            if head.val < pivot:
+                if not sH:
+                    sH = sT = head
+                else:
+                    sT.next = head
+                    sT = head
+            elif head.val == pivot:
+                if not eH:
+                    eH = eT = head
+                else:
+                    eT.next = head
+                    eT = head
+            else:
+                if not bH:
+                    bH = bT = head
+                else:
+                    bT.next = head
+                    bT = head
+            head = next
+
+        if sT:
+            sT.next = eH
+            eT = eT if eT else sT
+
+        if eT:
+            eT.next = bH
+
+        return sH if sH else eH if eH else bH
+
 
 ```
