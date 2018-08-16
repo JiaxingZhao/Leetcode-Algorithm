@@ -1,14 +1,105 @@
 面试题1 - - 面试题20：
 ```python
 等待补充
+```
 
+#### 面试题2： 实现Singleton模式
+
+> 设计一个类，我们只能生成该类的一个实例
+
+```python
+import threading
+
+def synchronize(func):
+    func.__lock__ = threading.Lock()
+
+    def synced_func(*args, **kwargs):
+        with func.__lock__:
+            return func(*args, **kwargs)
+
+    return synced_func
+
+
+# 类方法
+class SinletonClass(object):
+
+    @synchronize
+    def __new__(cls, *args, **kwargs):
+        if not getattr(cls, '_instance'):
+            cls._instance = super(SinletonClass, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
+
+# 装饰器方法
+def SinletonDecorator(cls):
+    _instance = {}
+
+    @synchronize
+    def get_instance(*args, **kwargs):
+        if cls not in _instance:
+            _instance[cls] = cls(*args, **kwargs)
+        return _instance
+    
+    return get_instance
+```
+
+#### 面试题3：数组中重复的数字
+
+> 题目一：
+>
+> 在一个长度为n的数组里有所有数字都在0~n-1的范围内，数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次，请找出数组中任意一个重复的数字，例如，如果输入长度为7的数组 [ 2, 3, 1, 0, 2, 5, 3 ] ，那么对应的输出是重复的数字2或者3
+
+```python
+def duplicate(arr):
+    if not arr:
+        return False
+
+    length = len(arr)
+
+    for i in range(length):
+        if arr[i] < 0 or arr[i] > length - 1:
+            return False
+
+    for i in range(length):
+        while arr[i] != i:
+            if arr[i] == arr[arr[i]]:
+                return arr[i]
+            temp = arr[i]
+            arr[i], arr[temp] = arr[temp], arr[i]
+    return False
+```
+
+> 题目二：
+>
+> 在一个长度为n+1的数组里的所有数字都在1-n的范围内，所以数组中至少有一个数字是重复的，请找出数组中任意一个重复的数字，但不能修改输入的数组，例如，如果输入长度为8 的数组 [ 2, 3, 5, 4, 3, 2, 6, 7 ] 那么对应的输出是重复的数字2或者
+
+```PYTHON
+def duplicate2(arr):
+    if not arr:
+        return False
+
+    length = len(arr)
+
+    for i in range(length):
+        if arr[i] < 0 or arr[i] >= length:
+            return False
+
+    new_arr = [None] * length
+
+    for i in range(length):
+        if new_arr[arr[i]] is None:
+            new_arr[arr[i]] = arr[i]
+        else:
+            return arr[i]
+
+    return False
 ```
 
 
-面试题21： 调整数组顺序使奇数位于偶数前面
+
+#### 面试题21： 调整数组顺序使奇数位于偶数前面
+
 ```python
-
-
 def reorder_odd_even(arr, func):
     if not arr or len(arr) <= 1:
         return
@@ -33,14 +124,11 @@ def isEven(num):
 
 def divide3(num):
     return num % 3 != 0
-
-
 ```
 
-面试题22： 链表中倒数第K个节点
+#### 面试题22： 链表中倒数第K个节点
+
 ```python
-
-
 def find_Kth_to_tail(head, k):
     if not head or not k:
         return False
@@ -54,14 +142,11 @@ def find_Kth_to_tail(head, k):
         pAhead = pAhead.next
         pBehind = pBehind.next
     return pBehind
-
-
 ```
 
-面试题23： 链表中环的入口节点
+#### 面试题23： 链表中环的入口节点
+
 ```python
-
-
 def entry_node_of_loop(head):
     if not head:
         return
@@ -75,11 +160,10 @@ def entry_node_of_loop(head):
         pAhead = pAhead.next
         pBehind = pBehind.next
     return pAhead
-
-
 ```
 
-面试题24： 反转链表
+#### 面试题24： 反转链表
+
 ```python
 # 非递归方式
 
@@ -110,14 +194,11 @@ def reverse_list1(head):
         head.next.next = head
         head.next = None
         return newhead
-
-
 ```
 
-面试题25： 合并两个排序的链表
+#### 面试题25： 合并两个排序的链表
+
 ```python
-
-
 def merge(head1, head2):
     if head1 == None:
         return head2
@@ -130,15 +211,11 @@ def merge(head1, head2):
         mHead = head2
         mHead.next = merge(head1, head2.next)
     return mHead
-
-
 ```
 
-面试题26： 树的子结构
+#### 面试题26： 树的子结构
 
 ```python
-
-
 def equal(num1, num2):
     if (num1 - num2) > -0.0000001 and (num1 - num2) < 0.0000001:
         return True
@@ -166,11 +243,10 @@ def has_subtree(root1, root2):
         if not result:
             result = has_subtree(root1.right, root2)
     return result
-
-
 ```
 
-面试题27： 二叉树的镜像
+#### 面试题27： 二叉树的镜像
+
 ```python
 # 递归方法
 
@@ -206,14 +282,11 @@ def mirror_recursively_while(root):
             stack.append(parent.left)
         if parent.right:
             stack.append(parent.right)
-
-
 ```
 
-面试题28： 对称的二叉树
+#### 面试题28： 对称的二叉树
+
 ```python
-
-
 def Symmetrical(root1, root2):
     if not root1 and not root2:
         return True
@@ -224,11 +297,10 @@ def Symmetrical(root1, root2):
 
 def isSymmetrical(root):
     return Symmetrical(root, root)
-
-
 ```
 
-面试题29： 顺时针打印矩阵
+#### 面试题29： 顺时针打印矩阵
+
 ```python
 # 解决方法1
 
@@ -298,11 +370,10 @@ def print_matrix_in_circle(matrix, col, row, start):
     if start < endX and start < endY - 1:
         for i in reversed(range(start + 1, endY)):
             print(matrix[i][start])
-
-
 ```
 
-面试题30： 包含min函数的栈
+#### 面试题30： 包含min函数的栈
+
 ```python
 # 使用列表模拟栈操作
 
@@ -327,14 +398,11 @@ def stack_with_min_pop():
 def get_min():
     if len(data) > 0 and len(min) > 0:
         return min[-1:][0]
-
-
 ```
 
-面试题31： 栈的压入、弹出序列
+#### 面试题31： 栈的压入、弹出序列
+
 ```python
-
-
 def is_pop_order(pPush, pPOP):
     stack = []
     while pPOP:
@@ -349,14 +417,11 @@ def is_pop_order(pPush, pPOP):
         else:
             return False
     return True
-
-
 ```
 
-面试题32： 从上到下打印二叉树
+#### 面试题32： 从上到下打印二叉树
+
 ```python
-
-
 def print_tree(root):
     if not root:
         return
@@ -369,14 +434,11 @@ def print_tree(root):
             stack.append(root.left)
         if root.right:
             stack.append(root.right)
-
-
 ```
 
-面试题33： 二叉搜索树的后序遍历序列
+#### 面试题33： 二叉搜索树的后序遍历序列
+
 ```python
-
-
 def verify_squence_of_bst(sequence):
     if len(sequence) == 0:
         return False
@@ -396,14 +458,11 @@ def verify_squence_of_bst(sequence):
     if i < len(sequence) - 2:
         right = verify_squence_of_bst(sequence[i:-1])
     return left and right
-
-
 ```
 
-面试题34： 二叉树中和为某一值的路径
+#### 面试题34： 二叉树中和为某一值的路径
+
 ```python
-
-
 def find_path(root, target):
     if not root:
         return []
@@ -424,14 +483,11 @@ def find_path(root, target):
 
     find_path_main(root)
     return all_path
-
-
 ```
 
-面试题35： 复杂链表的复制
+#### 面试题35： 复杂链表的复制
+
 ```python
-
-
 def clone_nodes(head):
     while head:
         cloned = head
@@ -466,14 +522,11 @@ def clone(head):
     clone(head)
     clone_siblings(head)
     return reconnect_nodes(head)
-
-
 ```
 
-面试题36： 二叉搜索树与双向链表
+#### 面试题36： 二叉搜索树与双向链表
+
 ```python
-
-
 def Convert(pRootOfTree):
     if pRootOfTree == None:
         return pRootOfTree
@@ -491,11 +544,10 @@ def Convert(pRootOfTree):
         pRootOfTree.right = right
         right.left = pRootOfTree
     return left if left else pRootOfTree
-
-
 ```
 
-面试题37： 序列化二叉树
+#### 面试题37： 序列化二叉树
+
 ```python
 # 序列化二叉树
 
@@ -524,14 +576,11 @@ def deserialize(serialize):
         node.right = create_tree()
         return node
     return create_tree()
-
-
 ```
 
-面试题38： 字符串的排列
+#### 面试题38： 字符串的排列
+
 ```python
-
-
 def permutation(string):
     if not string:
         return
@@ -581,13 +630,11 @@ def prettyp(solution):
 
 import random
 prettyp(random.choice(list(queens(8))))
-
 ```
 
-面试题39： 数组中出现次数超过一半的数字
+#### 面试题39： 数组中出现次数超过一半的数字
+
 ```python
-
-
 def more_than_half_num(nums):
     if not nums:
         return []
@@ -599,11 +646,10 @@ def more_than_half_num(nums):
         else:
             times += 1 if nums[i] == result else -1
     return result
-
-
 ```
 
-面试题40： 最小的K个数
+#### 面试题40： 最小的K个数
+
 ```python
 # 使用堆
 import heapq
@@ -619,11 +665,10 @@ def get_least_numbers(nums, k):
     for i in range(k):
         ret.append(heapq.heappop(heaps))
     return ret
-
-
 ```
 
-面试题41： 数据流中的中位数
+#### 面试题41： 数据流中的中位数
+
 ```python
 import heapq
 small = []
@@ -644,14 +689,11 @@ def get_median():
     else:
         median = (large[0] + small[-1]) / 2
     return median
-
-
 ```
 
-面试题42： 连续子数组的最大和
+#### 面试题42： 连续子数组的最大和
+
 ```python
-
-
 def find_greatest_sum_of_subarray(array):
     if not array:
         return
@@ -662,20 +704,17 @@ def find_greatest_sum_of_subarray(array):
         sum_num = max(sum_num + array[i], array[i])
         current = max(current, sum_num)
     return current
-
-
 ```
 
-面试题43： 1 - n整数中1出现的次数
+#### 面试题43： 1 - n整数中1出现的次数
+
 ```python
 暂时无解
-
 ```
 
-面试题44： 数字序列中某一位的数字
+#### 面试题44： 数字序列中某一位的数字
+
 ```python
-
-
 def digitAtIndex(index, digits):
     number = (0 if digits == 1 else 10**(digits - 1)) + (index / digits)
     indexFromRight = digits - index % digits
@@ -695,14 +734,11 @@ def digit_at_index(index):
         index -= digits * numbers
         digits += 1
     return -1
-
-
 ```
 
-面试题45： 把数组排成最小的数
+#### 面试题45： 把数组排成最小的数
+
 ```python
-
-
 def print_min_number(numbers):
     if not numbers:
         return
@@ -710,14 +746,11 @@ def print_min_number(numbers):
     key = cmp_to_key(lambda x, y: int(x + y) - int(y + x))
     res = ''.join(sorted(map(str, numbers), key=key)).lstrip('0')
     return res or '0'
-
-
 ```
 
-面试题46： 把数字翻译成字符串
+#### 面试题46： 把数字翻译成字符串
+
 ```python
-
-
 def get_translation_count(numbers):
     if not numbers:
         return 0
@@ -732,11 +765,10 @@ def get_translation_count(numbers):
                 count += counts[i + 2] if i < length - 2 else 1
         counts[i] = count
     return counts[0]
-
-
 ```
 
-面试题47： 礼物的最大价值
+#### 面试题47： 礼物的最大价值
+
 ```python
 # [1,10,3,8,12,2,9,6,5,7,4,11,3,7,16,5],4,4
 
@@ -755,14 +787,11 @@ def get_max_value(values, rows, cols):
                 left = temp[j - 1]
             temp[j] = max(up, left) + values[i * rows + j]
     return temp[-1]
-
-
 ```
 
-面试题48： 最长不含重复字符的子字符串
+#### 面试题48： 最长不含重复字符的子字符串
+
 ```python
-
-
 def length_of_longest_substring(s):
     res = 0
     if s is None or len(s) == 0:
@@ -776,14 +805,11 @@ def length_of_longest_substring(s):
         d[s[i]] = i
         res = max(res, tmp)
     return res
-
-
 ```
 
-面试题49： 丑数
+#### 面试题49： 丑数
+
 ```python
-
-
 def get_ugly_number(index):
     if not index:
         return 0
@@ -800,14 +826,11 @@ def get_ugly_number(index):
             m5 += 1
         next_index += 1
     return ugly_number[next_index - 1]
-
-
 ```
 
-面试题50： 第一个只出现一次的字符
+#### 面试题50： 第一个只出现一次的字符
+
 ```python
-
-
 def first_not_repeating_char(string):
     if not string:
         return
@@ -820,14 +843,11 @@ def first_not_repeating_char(string):
             res = s
             break
     return res
-
-
 ```
 
-面试题51： 数组中的逆序对
+#### 面试题51： 数组中的逆序对
+
 ```python
-
-
 class Solution:
     def InversePairs(self, data):
         self.count = 0
@@ -854,14 +874,11 @@ class Solution:
             return result
         MergeSort(data)
         return self.count
-
-
 ```
 
-面试题52： 两个链表中的第一个公共节点
+#### 面试题52： 两个链表中的第一个公共节点
+
 ```python
-
-
 def find_first_common_node(pHead1, pHead2):
     if not pHead1 or not pHead2:
         return None
@@ -871,14 +888,11 @@ def find_first_common_node(pHead1, pHead2):
         pa = pHead2 if pa is None else pa.next
         pb = pHead1 if pb is None else pb.next
     return pa
-
-
 ```
 
-面试题53： 在排序数组中查找数字
+#### 面试题53： 在排序数组中查找数字
+
 ```python
-
-
 def get_k(data, k, start, end, first):
     if start > end:
         return -1
@@ -913,14 +927,11 @@ def get_number_of_k(data, k):
         if first > -1 and last > -1:
             number = last - first + 1
     return number
-
-
 ```
 
-面试题54： 二叉搜索树的第K个节点
+#### 面试题54： 二叉搜索树的第K个节点
+
 ```python
-
-
 def k_node(root, k):
     if not root or not k:
         return
@@ -936,11 +947,10 @@ def k_node(root, k):
     if len(res) < k:
         return
     return res[k - 1]
-
-
 ```
 
-面试题55： 二叉树的深度
+#### 面试题55： 二叉树的深度
+
 ```python
 # 二叉树深度
 
@@ -972,14 +982,11 @@ def is_banlanced(root):
         return
     depth = 0
     return banlanced(root, depth)
-
-
 ```
 
-面试题56： 数组中数字出现的次数
+#### 面试题56： 数组中数字出现的次数
+
 ```python
-
-
 def find_nums_appear_once(data):
     if not data or len(data) < 2:
         return
@@ -1016,14 +1023,11 @@ def find_number_appearing_once(data):
         result = result << 1
         result += bitSum[i] % 3
     return result
-
-
 ```
 
-面试题57： 和为s的数字
+#### 面试题57： 和为s的数字
+
 ```python
-
-
 def find_numbers_with_sum(data, num):
     if not data or not num:
         return False
@@ -1058,14 +1062,11 @@ def find_continuous_sequence(sum):
                 print_continuous_sequence(small, big)
         big += 1
         curSum += big
-
-
 ```
 
-面试题58： 翻转字符串
+#### 面试题58： 翻转字符串
+
 ```python
-
-
 def reverse_string(data, start, end):
     while start < end:
         data[start], data[end] = data[end], data[start]
@@ -1106,32 +1107,26 @@ def left_rotate_string(data, n):
         reverse_string(data, secondStart, secondEnd)
         reverse_string(data, firstStart, secondEnd)
         return ''.join(data)
-
-
 ```
 
-面试题59： 队列的最大值
+#### 面试题59： 队列的最大值
+
 ```python
-
-
 def max_in_windows(nums, size):
     if not size or size > len(nums):
         return []
     return [max(nums[i:i + size]) for i in range(len(nums) - size + 1)]
-
-
 ```
 
-面试题60： n个骰子的点数
+#### 面试题60： n个骰子的点数
+
 ```python
 暂时无解
-
 ```
 
-面试题61： 扑克牌中的顺子
+#### 面试题61： 扑克牌中的顺子
+
 ```python
-
-
 def is_continuous(numbers):
     if not numbers:
         return False
@@ -1150,14 +1145,11 @@ def is_continuous(numbers):
         small = big
         big += 1
     return False if number_of_gap > number_of_zero else True
-
-
 ```
 
-面试题62： 圆圈中最后剩下的数字
+#### 面试题62： 圆圈中最后剩下的数字
+
 ```python
-
-
 def last_remaining(n, m):
     if not n or not m:
         return -1
@@ -1165,14 +1157,11 @@ def last_remaining(n, m):
     for i in range(2, n + 1):
         last = (last + m) % i
     return last
-
-
 ```
 
-面试题63： 股票的最大利润
+#### 面试题63： 股票的最大利润
+
 ```python
-
-
 def max_diff(numbers):
     if not numbers or len(numbers) < 2:
         return 0
@@ -1185,36 +1174,27 @@ def max_diff(numbers):
         if curDiff > maxDiff:
             maxDiff = curDiff
     return maxDiff
-
-
 ```
 
-面试题64： 求1 + 2 +···+n
+#### 面试题64： 求1 + 2 +···+n
+
 ```python
-
-
 def sum_solution(n):
     return sum(range(n + 1))
-
-
 ```
 
-面试题65： 不用加减乘除做加法
+#### 面试题65： 不用加减乘除做加法
+
 ```python
-
-
 def add_num(num1, num2):
     if not num1 or not num2:
         return
     return sum([num1, num2])
-
-
 ```
 
-面试题66： 构建乘积数组
-```python
+#### 面试题66： 构建乘积数组
 
-
+```Python
 def multiply(arrayA):
     head = [1]
     tail = [1]
@@ -1222,6 +1202,4 @@ def multiply(arrayA):
         head.append(arrayA[i] * head[i])
         tail.append(arrayA[-i - 1] * tail[i])
     return [head[j] * tail[-j - 1] for j in range(len(head))]
-
-
 ```
