@@ -95,6 +95,44 @@ def duplicate2(arr):
     return False
 ```
 
+#### 面试题4：二维数组中的查找
+
+> 在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序，请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+
+```python
+def Find(target, array):
+    if not array: 
+        return False
+    col = len(array[0]) - 1
+    cur_col = 0
+    cur_row = len(array) - 1
+    while cur_col <= col and cur_row >= 0:
+        if array[cur_row][cur_col] == target:
+            return True
+        if array[cur_row][cur_col] > target:
+            cur_row -= 1
+        if array[cur_row][cur_col] < target:
+            cur_col += 1
+    return False
+```
+
+#### 面试题5：替换空格
+
+> 请实现一个函数，把字符串中的每个空格替换成“%20”，例如，输入“We are happy”，则输出“We%20are%20happy”
+
+```python
+def replace_blank(string):
+    if not string:
+        return ""
+    new_string = ''
+    for i in string:
+        if i == ' ':
+            new_string += '%20'
+        else:
+            new_string += i
+    return new_string
+```
+
 
 
 #### 面试题21： 调整数组顺序使奇数位于偶数前面
