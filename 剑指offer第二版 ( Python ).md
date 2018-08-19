@@ -133,6 +133,52 @@ def replace_blank(string):
     return new_string
 ```
 
+#### 面试题6：从尾到头打印链表
+
+> 输入一个链表的头节点，从尾到头反过来打印出每个节点的值。
+
+```python
+class LinkNode:
+    def __init__(self, val=None, next=None):
+        self.val = val
+        self.next = next
+
+def PrintListReversingly(head):
+    if head:
+        if head.next:
+            PrintListReversingly(head.next)
+        print(head.val)
+```
+
+#### 面试题7：重建二叉树
+
+> 输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树，假设输入的前序遍历和中序遍历的结果中都不含重复的数字，例如，输入前序遍历序列 [ 1, 2, 4, 7, 3, 5, 6, 8 ] 和中序遍历序列 [ 4, 7, 2, 1, 5, 3, 8, 6 ] ,则重建以下二叉树
+>
+> ​			 ①
+>
+> ​		      /	       \
+>
+> ​		②		  ③
+>
+> ​             /		       /       \
+>
+> ​	④		  ⑤		  ⑥
+>
+> ​             \			       /
+>
+> ​		⑦		  ⑧
+
+```python
+def reConstructBinaryTree(pre, tin):
+    if not pre or not tin:
+        return None
+    root = TreeNode(pre.pop(0))
+    index = tin.index(root.val)
+    root.left = reConstructBinaryTree(pre, tin[:index])
+    root.right = reConstructBinaryTree(pre, tin[index+1:])
+    return root
+```
+
 
 
 #### 面试题21： 调整数组顺序使奇数位于偶数前面
