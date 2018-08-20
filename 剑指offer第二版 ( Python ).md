@@ -179,7 +179,144 @@ def reConstructBinaryTree(pre, tin):
     return root
 ```
 
+#### 面试题8：二叉树的下一个节点
 
+> 给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。 
+
+```python
+class TreeLinkNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+        self.next = None
+
+def GetNext(pNode):
+    if not pNode:
+        return
+
+    elif pNode.right != None:
+        pNode = pNode.right
+        while pNode.left != None:
+            pNode = pNode.left
+        return pNode
+
+    elif pNode.next != None and pNode.next.right == pNode:
+        while pNode.next != None and pNode.next.left != pNode:
+            pNode = pNode.next
+        return pNode.next
+
+    else:
+        return pNode.next
+```
+
+#### 面试题9：用两个栈实现队列 
+
+> 题目1：用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。 
+
+```python
+class StackToQueue:
+    def __init__(self):
+        self.stackA = []
+        self.stackB = []
+
+    def push(self, node):
+        self.stackA.append(node)
+
+    def pop(self):
+        if self.stackB:
+            return self.stackB.pop()
+        elif not self.stackA:
+            return None
+        else:
+            while self.stackA:
+                self.stackB.append(self.stackA.pop())
+            return self.stackB.pop()
+```
+
+> 题目2：用两个队列实现一个栈
+
+```python
+class QueueToStack:
+    def __init__(self):
+        self.queueA = []
+        self.queueB = []
+
+    def push(self, item):
+        if self.queueB:
+            self.queueB.append(item)
+        else:
+            self.queueA.append(item)
+
+
+    def pop(self):
+        if not self.queueA and not self.queueB:
+            return None
+
+        if self.queueA:
+            while len(self.queueA) > 1:
+                self.queueB.append(self.queueA.pop(0))
+            return self.queueA.pop()
+        else:
+            while len(self.queueB) > 1:
+                self.queueA.append(self.queueB.pop(0))
+            return self.queueB.pop()
+```
+
+#### 面试题10：斐波那切数列 
+
+> 大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项。
+> n<=39
+
+```python
+ def Fibonacci(n):
+    if n > 39:
+        return 0
+    res = [0,1]
+    while len(res) <= n:
+        res.append(res[-1] + res[-2])
+    return res[n]
+```
+
+#### 面试题11：旋转数组的最小数字 
+
+> 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。 NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。 
+
+```python
+def minNumberInRotateArray(rotateArray):
+    if not rotateArray:
+        return 0
+    index = rotateArray[0]
+    while index >= rotateArray[-1]:
+        rotateArray.insert(0, rotateArray[-1])
+        rotateArray.pop()
+    return rotateArray[0]
+```
+
+#### 面试题12：矩阵中的路径 
+
+#### 面试题13：机器人的运动范围 
+
+#### 面试题14：剪绳子 
+
+#### 面试题15：二进制中1的个数 
+
+> 输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+
+```python
+def NumberOf1(n):
+    return bin(n).count('1') if n >= 0 else bin(2**32 + n).count('1')
+```
+
+#### 面试题16：数值的整数次方 
+
+#### 面试题17：打印从1到最大的n位数 
+
+#### 面试题18：删除链表的节点 
+
+#### 面试题19：正则表达式匹配 
+
+#### 面试题20：表示数值的字符串 
 
 #### 面试题21： 调整数组顺序使奇数位于偶数前面
 
@@ -793,7 +930,13 @@ def find_greatest_sum_of_subarray(array):
 #### 面试题43： 1 - n整数中1出现的次数
 
 ```python
-暂时无解
+def NumberOf1Between1AndN_Solution(n):
+    count=0
+    for i in range(1,n+1):
+        for j in str(i):
+            if j=="1":
+                count+=1
+    return count
 ```
 
 #### 面试题44： 数字序列中某一位的数字
