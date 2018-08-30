@@ -1,8 +1,3 @@
-面试题1 - - 面试题20：
-```python
-等待补充
-```
-
 #### 面试题2： 实现Singleton模式
 
 > 设计一个类，我们只能生成该类的一个实例
@@ -295,9 +290,114 @@ def minNumberInRotateArray(rotateArray):
 
 #### 面试题12：矩阵中的路径 
 
+> 请设计一个函数，用来判断在一个矩阵中是否存在一条包含其字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向左、右、上、下移动一格，如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3x4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用下划线标出）。但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子。
+>
+> ​	a		b		t		g
+>
+> ​	c		f		c		s
+>
+> ​	j		d		e		h
+
+```python
+class Solution:
+    def hasPath(self, matrix, rows, cols, path):
+        for i in range(rows):
+            for j in range(cols):
+                if matrix[i*cols + j] == path[0]:
+                    if self.find_path(list(matrix), rows, cols, path[1:], i, j):
+                        return True
+
+    def find_path(self, matrix, rows, cols, path, i, j):
+        if not path:
+            return True
+        matrix[i*cols + j] = 0
+        if j+1 < cols and matrix[i*cols+j+1] == path[0]:
+            return self.find_path(matrix, rows, cols, path[1:], i, j+1)
+        elif j-1 >= 0 and matrix[i*cols+j-1] == path[0]:
+            return self.find_path(matrix, rows, cols, path[1:], i, j-1)
+        elif i+1 < rows and matrix[(i+1)*cols+j] == path[0]:
+            return self.find_path(matrix, rows, cols, path[1:], i+1, j)
+        elif i-1 >= 0 and matrix[(i-1)*cols+j] == path[0]:
+            return self.find_path(matrix, rows, cols, path[1:], i-1, j)
+        else:
+            return False
+```
+
 #### 面试题13：机器人的运动范围 
 
+> 地上有一个m行和n列的方格。一个机器人从坐标0,0的格子开始移动，每一次只能向左，右，上，下四个方向移动一格，但是不能进入行坐标和列坐标的数位之和大于k的格子。 例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。但是，它不能进入方格（35,38），因为3+5+3+8 = 19。请问该机器人能够达到多少个格子？ 
+
+```python
+#coding=utf-8
+class Solution:
+    def judge(self, threshold, i, j):
+        if sum(map(int, str(i) + str(j))) <= threshold:
+            return True
+        else:
+            return False
+ 
+    def findgrid(self, threshold, rows, cols, matrix, i, j):
+        count = 0
+        if i<rows and j<cols and i>=0 and j>=0 and self.judge(threshold, i, j) and matrix[i][j] == 0: # matrix[i][j]==0表示没走过这一格
+            matrix[i][j] = 1  # 表示已经走过了
+            count = 1 + self.findgrid(threshold, rows, cols, matrix, i, j+1) \
+            + self.findgrid(threshold, rows, cols, matrix, i, j-1) \
+            + self.findgrid(threshold, rows, cols, matrix, i+1, j) \
+            + self.findgrid(threshold, rows, cols, matrix, i-1, j)
+        return count
+ 
+    def movingCount(self, threshold, rows, cols):
+        matrix = [[0 for i in range(cols)] for j in range(rows)]
+        count = self.findgrid(threshold, rows, cols, matrix, 0, 0)
+        print(matrix)
+        return count
+```
+
 #### 面试题14：剪绳子 
+
+> 给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n>1,m>1），  每段绳子的长度记为 k[0], k[1], k[2], …, k[m]。  请问 k[0] * k[1] * k[2] * … * k[m] 可能的最大乘积是多少？  例如，当绳子的长度为8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。 
+
+```python
+class Solution:
+    def MaxProductAfterCut(self, n):
+        # 动态规划
+        if n < 2:
+            return 0
+        if n == 2:
+            return 1
+        if n == 3:
+            return 2
+        products = [0] * (n + 1)
+        products[0] = 0
+        products[1] = 1
+        products[2] = 2
+        products[3] = 3
+
+        for i in range(4, n + 1):
+            max = 0
+            for j in range(1, i // 2 + 1):
+                product = products[j] * products[i - j]
+                if product > max:
+                    max = product
+            products[i] = max
+        # print(products)
+        return products[n]
+
+    def MaxProductAfterCut2(self, n):
+        # 贪婪算法
+        if n < 2:
+            return 0
+        if n == 2:
+            return 1
+        if n == 3:
+            return 2
+        timesOf3 = n // 3
+        if n - timesOf3 * 3 == 1:
+            timesOf3 -= 1
+
+        timesOf2 = (n - timesOf3 * 3) // 2
+        return (3 ** timesOf3) * (2 ** timesOf2)
+```
 
 #### 面试题15：二进制中1的个数 
 
@@ -310,15 +410,166 @@ def NumberOf1(n):
 
 #### 面试题16：数值的整数次方 
 
+> 给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
+
+```python
+class Solution:
+    g_InvalidInput = False
+
+    def Power(self, base, exponent):
+        if base == 0.0 and exponent < 0:
+            g_InvalidInput = True
+            return 0.0
+        if exponent >= 0:
+            return self.PowerWithUnsignedExponent(base, exponent)
+        return 1.0 / self.PowerWithUnsignedExponent(base, -exponent)
+
+    def PowerWithUnsignedExponent(self, base, exponent):
+        result = 1.0
+        for i in range(exponent):
+            result *= base
+        return result
+```
+
 #### 面试题17：打印从1到最大的n位数 
+
+> 输入数字n，按顺序打印出从1到最大的n位十进制数。比如输入3，则打印出1、2、3一直到最大的3位数999。 
+
+```python
+class Solution:
+    def Print1ToMaxOfNDigits(self, n):
+        if n <= 0:
+            return
+        number = ['0'] * n
+        for i in range(10):
+            number[0] = str(i)
+            self.Print1ToMaxOfNDigitsRecursively(number, n, 0)
+
+    def PrintNumber(self, number):
+        isBeginning0 = True
+        nLength = len(number)
+        for i in range(nLength):
+            if isBeginning0 and number[i] != '0':
+                isBeginning0 = False
+            if not isBeginning0:
+                print('%c' % number[i])
+        print('\t')
+
+    def Print1ToMaxOfNDigitsRecursively(self, number, length, index):
+        if index == length - 1:
+            self.PrintNumber(number)
+            return
+        for i in range(10):
+            number[index + 1] = str(i)
+            self.Print1ToMaxOfNDigitsRecursively(number, length, index + 1)
+```
 
 #### 面试题18：删除链表的节点 
 
+> 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。 例如，链表1->2->3->3->4->4->5 处理后为 1->2->5 
+
+```python
+class Solution:
+    def delete_node(self, head_node, del_node):
+        # 删除指定节点
+        if not (head_node and del_node):
+            return False
+
+        # 要删除的节点不是尾节点
+        if del_node.next_node:
+            del_next_node = del_node.next_node
+            del_node.value = del_next_node.value
+            del_node.next_node = del_next_node.next_node
+            del_next_node.value = None
+            del_next_node.next_node = None
+
+        # 链表只要一个节点，删除头节点（也是尾节点）
+        elif del_node == head_node:
+            head_node = None
+            del_node = None
+
+        # 链表中有多个节点，删除尾节点
+        else:
+            node = head_node
+            while node.next_node != del_node:
+                node = node.next_node
+            node.next_node = None
+            del_node = None
+
+        return head_node
+```
+
 #### 面试题19：正则表达式匹配 
+
+> 请实现一个函数用来匹配包括’.’和’\*’的正则表达式。模式中的字符’.’表示任意一个字符，而’’表示它前面的字符可以出现任意次（包含0次）。 在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串”aaa”与模式”a.a”和”abaca”匹配，但是与”aa.a”和”aba”均不匹配 
+
+```python
+class Solution:
+    def match(self, s, pattern):
+        if len(s) == 0 and len(pattern) == 0:
+            return True
+        if len(s) > 0 and len(pattern) == 0:
+            return False
+        # 当模式中的第二个字符是"*"时
+        if len(pattern) > 1 and pattern[1] == "*":
+            # 如果字符串第一个模式跟模式第一个字符匹配(相等或匹配到".")，可以有3种匹配方式：
+            if len(s) > 0 and (s[0] == pattern[0] or pattern[0] == '.'):
+                # 1、模式后移2字符，相当于X*被忽略
+                # 2、字符串后移1字符，模式后移两字符；
+                # 3、字符串后移1字符，模式不变，即继续匹配字符下一位，因为*可以匹配多位
+                return self.match(s, pattern[2:]) or self.match(s[1:], pattern[2:]) or self.match(s[1:], pattern)
+
+            else:
+                return self.match(s, pattern[2:])
+
+        if len(s) > 0 and (s[0] == pattern[0] or pattern[0] == '.'):
+            return self.match(s[1:], pattern[1:])
+        
+        return False
+```
 
 #### 面试题20：表示数值的字符串 
 
+> 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。例如，字符串”+100”,”5e2”,”-123”,”3.1416”和”-1E-16”都表示数值。 但是”12e”,”1a3.14”,”1.2.3”,”+-5”和”12e+4.3”都不是。 
+
+```python
+class Solution:
+    # s字符串
+    def isNumeric(self, s):
+        # write code here
+        if not s or len(s) <= 0:
+            return False
+        alist = [i.lower() for i in s]
+        if 'e' in alist:
+            index = alist.index('e')
+            front = alist[:index]
+            behind = alist[index + 1:]
+            if '.' in behind or len(behind) == 0:
+                return False
+            isfront = self.isDigit(front)
+            isbehind = self.isDigit(behind)
+            return isfront and isbehind
+        else:
+            return self.isDigit(alist)
+
+    def isDigit(self, alist):
+        dotNum = 0
+        allow_num = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '.']
+        for i in range(len(alist)):
+            if alist[i] not in allow_num:
+                return False
+            if alist[i] == '.':
+                dotNum += 1
+            if alist[i] in '+-' and i != 0:
+                return False
+        if dotNum > 1:
+            return False
+        return True
+```
+
 #### 面试题21： 调整数组顺序使奇数位于偶数前面
+
+> 输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分。
 
 ```python
 def reorder_odd_even(arr, func):
@@ -349,6 +600,15 @@ def divide3(num):
 
 #### 面试题22： 链表中倒数第K个节点
 
+> 输入一个链表，输出该链表中倒数第K的结点，为了符合大多数人的习惯，本题从1开始计数，即链表的尾结点是倒数第1个节点。例如，一个链表有6个节点，从头节点开始，它们的值依次是1、2、3、4、5、6，这个链表的倒数第3个节点是指为4的节点。链表节点定义如下。
+
+```python
+class ListNode(object):
+	def __init__(self, value=None, next=None):
+        self.value = value
+        self.next = next
+```
+
 ```python
 def find_Kth_to_tail(head, k):
     if not head or not k:
@@ -367,6 +627,8 @@ def find_Kth_to_tail(head, k):
 
 #### 面试题23： 链表中环的入口节点
 
+> 如果一个链表中包含环，如何找出环的入口节点？例如，在如图所示链表中，环的入口节点是节点3
+
 ```python
 def entry_node_of_loop(head):
     if not head:
@@ -384,6 +646,8 @@ def entry_node_of_loop(head):
 ```
 
 #### 面试题24： 反转链表
+
+> 定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点
 
 ```python
 # 非递归方式
@@ -419,6 +683,8 @@ def reverse_list1(head):
 
 #### 面试题25： 合并两个排序的链表
 
+> 输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。
+
 ```python
 def merge(head1, head2):
     if head1 == None:
@@ -435,6 +701,8 @@ def merge(head1, head2):
 ```
 
 #### 面试题26： 树的子结构
+
+> 输入两颗二叉树A和B，判断B是不是A的子结构
 
 ```python
 def equal(num1, num2):
@@ -467,6 +735,8 @@ def has_subtree(root1, root2):
 ```
 
 #### 面试题27： 二叉树的镜像
+
+> 请完成一个函数，输入一颗二叉树，该函数输出它的镜像。
 
 ```python
 # 递归方法
@@ -506,6 +776,8 @@ def mirror_recursively_while(root):
 ```
 
 #### 面试题28： 对称的二叉树
+
+> 请实现一个函数，用来判断一颗二叉树是不是对称的，如果一颗二叉树和它的镜像一样，那么它是对称的。
 
 ```python
 def Symmetrical(root1, root2):
@@ -1348,7 +1620,19 @@ def max_in_windows(nums, size):
 #### 面试题60： n个骰子的点数
 
 ```python
-暂时无解
+def get_ans(n):
+    dp = [[0 for i in range(6 * n)] for i in range(n)]
+
+    for i in range(6):
+        dp[0][i] = 1
+    # print dp
+    for i in range(1, n):  # 1，相当于2个骰子。
+        for j in range(i, 6 * (i + 1)):  # [0,i-1]的时候，频数为0（例如2个骰子不可能投出点数和为1）
+            dp[i][j] = dp[i - 1][j - 6] + dp[i - 1][j - 5] + dp[i - 1][j - 4] + \
+                       dp[i - 1][j - 3] + dp[i - 1][j - 2] + dp[i - 1][j - 1]
+
+    count = dp[n - 1]
+    return count  # 算得骰子投出每一个点数的频数。再除以总的排列数即可得到频率
 ```
 
 #### 面试题61： 扑克牌中的顺子
