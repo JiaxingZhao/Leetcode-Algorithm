@@ -1426,3 +1426,99 @@ class Solution:
 
 
  # 第3章 二叉树问题
+ 
+分别用递归和非递归方式实现二叉树先序、中序和后序遍历
+
+```python
+
+class TreeNode:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def preOrderRecur(self, head):
+        if not head:
+            return
+        print(head.value, end=" ")
+        self.preOrderRecur(head.left)
+        self.preOrderRecur(head.right)
+
+    def inOrderRecur(self, head):
+        if not head:
+            return
+        self.inOrderRecur(head.left)
+        print(head.value, end=" ")
+        self.inOrderRecur(head.right)
+
+    def posOrderRecur(self, head):
+        if not head:
+            return
+        self.posOrderRecur(head.left)
+        self.posOrderRecur(head.right)
+        print(head.value, end=" ")
+
+    def preOrderUnRecur(self, head):
+        if head:
+            stack = []
+            stack.append(head)
+            while stack:
+                head = stack.pop()
+                print(head.value, end=" ")
+                if head.right:
+                    stack.append(head.right)
+                if head.left:
+                    stack.append(head.left)
+
+    def inOrderUnRecur(self, head):
+        if head:
+            stack = []
+            while stack or head:
+                if head:
+                    stack.append(head)
+                    head = head.left
+                else:
+                    head = stack.pop()
+                    print(head.value, end=" ")
+                    head = head.right
+
+    def posOrderUnRecur1(self, head):
+        if head:
+            s1 = []
+            s2 = []
+            s1.append(head)
+            while s1:
+                head = s1.pop()
+                s1.append(head)
+                if head.left:
+                    s1.append(head.left)
+                if head.right:
+                    s1.append(head.right)
+            while s2:
+                print(s2.pop(), end=" ")
+
+    def posOrderUnRecur2(self, head):
+        if head:
+            stack = [head]
+            c = None
+            while stack:
+                c = stack[-1]
+                if c.left and head != c.left and head != c.right:
+                    stack.append(c.left)
+                elif c.right and head != c.right:
+                    stack.append(c.right)
+                else:
+                    print(stack.pop(), end=" ")
+                    head = c
+```
+
+*****
+
+打印二叉树的边界节点
+
+```python
+
+
+```
