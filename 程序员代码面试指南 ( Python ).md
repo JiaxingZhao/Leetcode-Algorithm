@@ -1,4 +1,4 @@
-# 第1章 栈和队列
+ # 第1章 栈和队列
 
 设计一个有getMin功能的栈
 ```python
@@ -861,3 +861,568 @@ class Solution:
 
 
 ```
+
+*****
+
+两个单链表生成相加链表
+```python
+class LinkNode:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+
+class Solution:
+    def addLists1(self, head1, head2):
+        s1 = []
+        s2 = []
+        while head1:
+            s1.append(s1.value)
+            s1 = s1.next
+        while head2:
+            s2.append(s2.value)
+            s2 = s2.next
+        ca = 0
+        n1 = 0
+        n2 = 0
+        n = 0
+        node = None
+        pre = None
+        while s1 or s2:
+            n1 = 0 if not s1 else s1.pop()
+            n2 = 0 if not s2 else s2.pop()
+            n = n1 + n2 + ca
+            pre = node
+            node = LinkNode(n % 10)
+            node.next = pre
+            ca = n // 10
+        if ca == 1:
+            pre = node
+            node = LinkNode(1)
+            node.next = pre
+        return node
+
+    def addLists2(self, head1, head2):
+        head1 = self.reverseList(head1)
+        head2 = self.reverseList(head2)
+        ca = 0
+        n1 = 0
+        n2 = 0
+        n = 0
+        c1 = head1
+        c2 = head2
+        node = None
+        pre = None
+        while c1 or c2:
+            n1 = c1.value if c1 else 0
+            n2 = c2.value if c2 else 0
+            n = n1 + n2 + ca
+            pre = node
+            node = LinkNode(n % 10)
+            node.next = pre
+            ca = n // 10
+            c1 = c1.next if c1 else None
+            c2 = c2.next if c2 else None
+        if ca == 1:
+            pre = node
+            node = LinkNode(1)
+            node.next = pre
+        self.reverseList(head1)
+        self.reverseList(head2)
+        return node
+
+    def reverseList(self, head):
+        pre = None
+        while head:
+            next = head.next
+            head.next = pre
+            pre = head
+            head = next
+        return pre
+```
+
+*****
+
+两个单链表相交的一系列问题
+```python
+
+class LinkNode:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+class Solution:
+
+    def getIntersectNode(self, head1, head2):
+        if not head1 or not head2:
+            return None
+        loop1 = self.getLoopNode(head1)
+        loop2 = self.getLoopNode(head2)
+        if not loop1 and not loop2:
+            return self.noLoop(head1, head2)
+        if loop1 and loop2:
+            return self.bothLoop(head1, loop1, head2, loop2)
+        return None
+
+    def getLoopNode(self, head):
+        if not head or not head.next or head.next.next:
+            return None
+        n1 = head.next
+        n2 = head.next.next
+        while n1 != n2:
+            if not n2.next or not n2.next.next:
+                n2 = n2.next.next
+                n1 = n1.next
+
+        n2 = head
+        while n1 != n2:
+            n1 = n1.next
+            n2 = n2.next
+        return n1
+
+    def noLoop(self, head1, head2):
+        if not head1 or not head2:
+            return None
+        cur1 = head1
+        cur2 = head2
+        n = 0
+        while cur1.next:
+            n += 1
+            cur1 = cur1.next
+        while cur2.next:
+            n -= 1
+            cur2 = cur2.next
+        if cur1 != cur2:
+            return None
+
+        cur1 = head1 if n > 0 else head2
+        cur2 = head2 if cur1 == head1 else head1
+        n = abs(n)
+        while n != 0:
+            n -= 1
+            cur1 = cur1.next
+        while cur1 != cur2:
+            cur1 = cur1.next
+            cur2 = cur2.next
+        return cur1
+
+    def bothLoop(self, head1, loop1, head2, loop2):
+        cur1 = None
+        cue2 = None
+        if loop1 == loop2:
+            cur1 = head1
+            cur2 = head2
+            n = 0
+            while cur1 != loop1:
+                n += 1
+                cur1 = cur1.next
+            while cur2 != loop2:
+                n -= 1
+                cur2 = cur2.next
+            cur1 = head1 if n > 0 else head2
+            cur2 = head2 if cur1 == head1 else head1
+            n = abs(n)
+            while n != 0:
+                n -= 1
+                cur1 = cur1.next
+            while cur1 != cur2:
+                cur1 = cur1.next
+                cur2 = cur2.next
+            return cur1
+        else:
+            cur1 = loop1.next
+            while cur1 != loop1:
+                if cur1 == loop2:
+                    return cur1
+                cur1 = cur1.next
+            return None
+```
+
+*****
+
+将单链表的每K个节点之间逆序
+```python
+
+class LinkNode:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+        
+class Solution:
+    def reverseKnodes1(self, head, K):
+        if K < 2:
+            return head
+
+        stack = []
+        newHead = head
+        cur = head
+        pre = None
+        next = None
+        while cur:
+            next = cur.next
+            stack.append(cur)
+            if len(stack) == K:
+                pre = self.resign1(stack, pre, next)
+                newHead = cur if newHead == head else newHead
+            cur = next
+        return newHead
+
+    def resign1(self, stack, left, right):
+        cur = stack.pop()
+        if left:
+            left.next = cur
+        next = None
+        while stack:
+            next = stack.pop()
+            cur.next = next
+            cur = next
+        cur.next = right
+        return cur
+
+    def reverseKNodes2(self, head, K):
+        if K < 2:
+            return head
+
+        cur = head
+        start = None
+        pre = None
+        next = None
+        count = 1
+        while cur:
+            next = cur.next
+            if count == K:
+                start = head if not pre else pre.next
+                head = cur if not pre else head
+                self.resign2(pre, start, cur, next)
+                pre = start
+                count = 0
+            count += 1
+            cur = next
+        return head
+
+    def resign2(self, left, start, end, right):
+        pre = start
+        cur = start.next
+        next = None
+        while cur != right:
+            next = cur.next
+            cur.next = pre
+            pre = cur
+            cur = next
+        if left:
+            left.next = end
+        start.next = right
+```
+
+*****
+
+删除无序单链表中值重复出现的节点
+```python
+
+class LinkNode:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+        
+class Solution:
+    def removeRep1(self, head):
+        if not head:
+            return
+        valueSet = set()
+        pre = head
+        cur = head.next
+        valueSet.add(pre.value)
+        while cur:
+            if cur.value in valueSet:
+                pre.next = cur.next
+            else:
+                valueSet.add(cur.value)
+                pre = cur
+            cur = cur.next
+
+    def removeRep2(self, head):
+        cur = head
+        pre = None
+        next = None
+        while cur:
+            pre = cur
+            next = cur.next
+            while next:
+                if cur.value == next.value:
+                    pre.next = next.next
+                else:
+                    pre = next
+                next = next.next
+            cur = cur.next
+```
+
+*****
+
+在单链表中删除指定值的节点
+
+```python
+class LinkNode:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+        
+
+class Solution:
+    def removeValue1(self, head, num):
+        stack = []
+        while head:
+            if head.value != num:
+                stack.append(head)
+            head = head.next
+
+        while stack:
+            stack[-1].next = head
+            head = stack.pop()
+
+        return head
+
+    def removeValue2(self, head, num):
+        while head:
+            if head.value == num:
+                break
+            head = head.next
+
+        pre = head
+        cur = head
+
+        while cur:
+            if cur.value == num:
+                pre.next = cur.next
+            else:
+                pre = cur
+            cur = cur.next
+        return head
+```
+
+*****
+
+将搜索二叉树转换为双向链表
+
+
+```python
+class DoubleLinkNode:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def convert1(self, head):
+        queue = []
+        self.inOrderToQueue(head, queue)
+        if not queue:
+            return head
+        head = queue.pop(0)
+        pre = head
+        pre.left = None
+        cur = None
+        while queue:
+            cur = queue.pop(0)
+            pre.right = cur
+            cur.left = pre
+            pre = cur
+        pre.right = None
+        return head
+
+    def inOrderToQueue(self, head, queue):
+        if not head:
+            return
+        self.inOrderToQueue(head.left, queue)
+        queue.append(head)
+        self.inOrderToQueue(head.right, queue)
+
+    def convert2(self, head):
+        if not head:
+            return None
+        last = self.process(head)
+        head = last.right
+        last.right = None
+        return head
+    
+    def process(self, head):
+        if not head:
+            return None
+        
+        leftE = self.process(head.left)
+        rightE = self.process(head.right)
+        leftS = leftE.right if leftE else None
+        rightS = rightE.right if rightE else None
+        if leftE and rightE:
+            leftE.right = head
+            head.left = leftE
+            head.right = rightS
+            rightS.left = head
+            rightE.right = leftS
+            return rightE
+        elif leftE:
+            leftE.right = head
+            head.left = leftE
+            head.right = leftS
+            return head
+        elif rightE:
+            head.right = rightS
+            rightS.left = head
+            rightE.right = head
+            return rightE
+        else:
+            head.right = head
+            return head
+
+```
+
+*****
+
+单链表的选择排序
+
+```python
+class LinkNode:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+
+class Solution:
+    def selectionSort(self, head):
+        tail = None
+        cur = head
+        smallPre = None
+        small = None
+        while cur:
+            small = cur
+            smallPre = self.getSmallestPreNode(head)
+            if smallPre:
+                small = smallPre.next
+                smallPre.next = small.next
+            cur = cur.next if cur == small else cur
+            if not tail:
+                head = small
+            else:
+                tail.next = small
+            tail = small
+        return head
+
+    def getSmallestPreNode(self, head):
+        small = head
+        smallPre = None
+        pre = head
+        cur = head.next
+        while cur:
+            if cur.value < small.value:
+                small = cur
+                smallPre = pre
+            pre = cur
+            cur = cur.next
+        return smallPre
+
+```
+
+*****
+
+一种怪异的节点删除方式
+
+```python
+class Solution:
+    def removeNodeWired(self, node):
+        if not node:
+            return
+        next = node.next
+        if not next:
+            raise Exception('Can not remove last node.')
+        node.value = next.value
+        node.next = next.next
+
+```
+
+*****
+
+向有序的环形单链表中插入新节点
+```python
+
+class Solution:
+    def insertNum(self, head, num):
+        node = LinkNode(num)
+        if not head:
+            node.next = node
+            return node
+
+        pre = head
+        cur = head.next
+        while cur != head:
+            if pre.value <= num <= cur.value:
+                break
+            pre = cur
+            cur = cur.next
+
+        pre.next = node
+        node.next = cur
+        return head if head.value < num else node
+```
+
+*****
+
+合并两个有序的单链表
+
+```python
+
+class Solution:
+    def merge(self, head1, head2):
+        if not head1 or not head2:
+            return head1 if head1 else head2
+        head = head1 if head1.value < head2.value else head2
+        cur1 = head1 if head == head1 else head2
+        cur2 = head2 if head == head2 else head1
+        pre = None
+        next = None
+        while cur1 and cur2:
+            if cur1.value <= cur2.value:
+                pre = cur1
+                cur1 = cur1.next
+            else:
+                next = cur2.next
+                pre.next = cur2
+                cur2.next = cur1
+                pre = cur2
+                cur2 = next
+        pre.next = cur2 if not cur1 else cur1
+        return head
+```
+
+*****
+
+按照左右半区的方式重新组合单链表
+
+```python
+
+class Solution:
+    def relocate(self, head):
+        if not head or not head.next:
+            return
+
+        mid = head
+        right = head.next
+        while right.next and right.next.next:
+            mid = mid.next
+            right = right.next.next
+        right = mid.next
+        mid.next = None
+        self.mergeLR(head, right)
+
+    def mergeLR(self, left, right):
+        next = None
+        while left.next:
+            next = right.next
+            right.next = left.next
+            left.next = right
+            left = right.next
+            right = next
+        left.next = right
+```
+
+
+ # 第3章 二叉树问题
